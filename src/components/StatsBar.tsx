@@ -43,8 +43,8 @@ function AnimatedCounter({ target, color }: { target: number; color: string }) {
   }, [target]);
 
   return (
-    <div ref={ref} className={`text-4xl font-bold font-display tabular-nums ${color} transition-all duration-300`}>
-      {count}
+    <div ref={ref} className={`text-2xl sm:text-4xl font-bold font-display tabular-nums ${color} transition-all duration-300`}>
+      {count.toLocaleString()}
     </div>
   );
 }
@@ -53,7 +53,7 @@ export function StatsBar() {
   const { tr } = useLang();
 
   return (
-    <div className="grid grid-cols-5 gap-4 px-8 py-6 border-b border-dbos-border">
+    <div className="grid grid-cols-3 sm:grid-cols-5 gap-3 sm:gap-4 px-4 sm:px-8 py-4 sm:py-6 border-b border-dbos-border">
       {statsConfig.map((stat) => (
         <div key={stat.key} className="text-center group cursor-default">
           <AnimatedCounter target={stat.value} color={stat.colorClass} />

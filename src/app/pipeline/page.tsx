@@ -46,7 +46,7 @@ export default function PipelinePage() {
       <div className="gradient-border mb-8" />
 
       {/* Pipeline stages */}
-      <div className="grid grid-cols-5 gap-4 px-8 pb-8">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 px-4 sm:px-8 pb-8">
         {pipelineStages.map((stage) => {
           const stageKey = stage.id as keyof typeof tr.pipeline.stages;
           const stageTr = tr.pipeline.stages[stageKey];

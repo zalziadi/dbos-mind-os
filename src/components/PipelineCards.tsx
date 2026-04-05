@@ -33,7 +33,7 @@ export function PipelineCards() {
   const { tr } = useLang();
 
   return (
-    <div className="grid grid-cols-5 gap-3 px-8 pb-8">
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 px-4 sm:px-8 pb-8">
       {pipelineStages.map((stage) => {
         const stageKey = stage.id as keyof typeof tr.pipeline.stages;
         const stageTr = tr.pipeline.stages[stageKey];

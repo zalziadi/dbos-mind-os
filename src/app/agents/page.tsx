@@ -28,7 +28,7 @@ export default function AgentsPage() {
       <AgentNetwork />
 
       {/* Platform bar */}
-      <div className="grid grid-cols-4 gap-3 px-8 pb-8">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 px-4 sm:px-8 pb-8">
         {platforms.map((p) => {
           const platform = tr.agents.platforms[p.key];
           return (

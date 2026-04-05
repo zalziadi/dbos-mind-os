@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLang } from "@/context/LangContext";
 
 type Verdict = "proceed" | "pause" | "reject" | null;
@@ -13,8 +13,29 @@ interface DecisionState {
   verdict: Verdict;
 }
 
+interface SavedDecision {
+  input: string;
+  aligned: boolean;
+  energy: string;
+  verdict: string;
+  timestamp: string;
+}
+
+function loadHistory(): SavedDecision[] {
+  try {
+    const raw = localStorage.getItem("dbos-court-history");
+    return raw ? JSON.parse(raw) : [];
+  } catch { return []; }
+}
+
+function saveDecision(d: SavedDecision) {
+  const history = loadHistory();
+  history.unshift(d);
+  localStorage.setItem("dbos-court-history", JSON.stringify(history.slice(0, 20)));
+}
+
 export default function CourtPage() {
-  const { tr, isRTL } = useLang();
+  const { tr, isRTL, lang } = useLang();
   const [state, setState] = useState<DecisionState>({
     step: 0,
     input: "",
@@ -22,6 +43,11 @@ export default function CourtPage() {
     energy: null,
     verdict: null,
   });
+  const [history, setHistory] = useState<SavedDecision[]>([]);
+
+  useEffect(() => {
+    setHistory(loadHistory());
+  }, []);
 
   const handleStart = () => {
     if (!state.input.trim()) return;
@@ -38,6 +64,16 @@ export default function CourtPage() {
     else if (!state.aligned && value === "low") verdict = "reject";
     else verdict = "pause";
     setState((s) => ({ ...s, energy: value, verdict, step: 3 }));
+    // Save to localStorage
+    const decision: SavedDecision = {
+      input: state.input,
+      aligned: state.aligned!,
+      energy: value,
+      verdict: verdict!,
+      timestamp: new Date().toISOString(),
+    };
+    saveDecision(decision);
+    setHistory(loadHistory());
   };
 
   const reset = () => {
@@ -227,6 +263,31 @@ export default function CourtPage() {
           </div>
         )}
       </div>
+
+      {/* Decision History */}
+      {history.length > 0 && (
+        <div className="max-w-xl mx-auto px-4 sm:px-8 mt-8">
+          <h3 className="text-xs font-mono text-gray-500 uppercase tracking-wider mb-3">
+            {lang === "ar" ? "سجل القرارات" : "Decision History"}
+          </h3>
+          <div className="space-y-2">
+            {history.slice(0, 5).map((d, i) => (
+              <div key={i} className="bg-dbos-card border border-dbos-border rounded-lg p-3 flex items-center justify-between gap-3">
+                <p className={`text-[11px] text-gray-400 font-mono truncate flex-1 ${isRTL ? "text-right" : ""}`}>
+                  {d.input}
+                </p>
+                <span className={`text-[10px] font-mono shrink-0 px-2 py-0.5 rounded border ${
+                  d.verdict === "proceed" ? "text-neural-green border-neural-green/30" :
+                  d.verdict === "reject" ? "text-neural-red border-neural-red/30" :
+                  "text-neural-amber border-neural-amber/30"
+                }`}>
+                  {d.verdict}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       <footer className="text-center py-12 mt-8 border-t border-dbos-border">
         <p className="text-[10px] text-gray-600 tracking-[0.15em] font-mono">
