@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useLang } from "@/context/LangContext";
 
 type Verdict = "proceed" | "pause" | "reject" | null;
 
@@ -13,6 +14,7 @@ interface DecisionState {
 }
 
 export default function CourtPage() {
+  const { tr, isRTL } = useLang();
   const [state, setState] = useState<DecisionState>({
     step: 0,
     input: "",
@@ -43,69 +45,122 @@ export default function CourtPage() {
   };
 
   const verdictConfig = {
-    proceed: { label: "PROCEED", color: "text-neural-green", border: "border-neural-green", glow: "glow-green", icon: "✓" },
-    pause: { label: "PAUSE & REFLECT", color: "text-neural-amber", border: "border-neural-amber", glow: "glow-amber", icon: "⏸" },
-    reject: { label: "REJECT", color: "text-neural-red", border: "border-neural-red", glow: "glow-red", icon: "✕" },
+    proceed: {
+      label: tr.court.verdicts.proceed,
+      color: "text-neural-green",
+      border: "border-neural-green",
+      glow: "glow-green",
+      icon: "✓",
+    },
+    pause: {
+      label: tr.court.verdicts.pause,
+      color: "text-neural-amber",
+      border: "border-neural-amber",
+      glow: "glow-amber",
+      icon: "⏸",
+    },
+    reject: {
+      label: tr.court.verdicts.reject,
+      color: "text-neural-red",
+      border: "border-neural-red",
+      glow: "glow-red",
+      icon: "✕",
+    },
   };
+
+  // Progress steps indicator
+  const steps = [
+    { n: 0, icon: "✎" },
+    { n: 1, icon: "◎" },
+    { n: 2, icon: "⚡" },
+    { n: 3, icon: "⚖" },
+  ];
 
   return (
     <div className="min-h-screen">
-      {/* Header */}
       <header className="text-center pt-12 pb-4">
-        <h1 className="text-4xl font-display font-light tracking-[0.15em] text-gray-200 uppercase">
-          Decision Court
+        <h1 className="text-4xl font-display font-light tracking-[0.12em] text-gray-200 uppercase transition-all duration-500">
+          {tr.court.title}
         </h1>
-        <p className="text-sm text-gray-500 mt-2 font-mono">
-          Aligned → Energy → Verdict
+        <p className="text-sm text-gray-500 mt-2 font-mono transition-all duration-500">
+          {tr.court.subtitle}
         </p>
       </header>
 
       <div className="gradient-border mb-8" />
 
+      {/* Step progress */}
+      <div className="flex items-center justify-center gap-3 mb-10">
+        {steps.map((s, i) => (
+          <div key={s.n} className="flex items-center gap-3">
+            <div className={`
+              w-8 h-8 rounded-full flex items-center justify-center text-sm
+              transition-all duration-300 border
+              ${state.step === s.n
+                ? "bg-neural-blue/20 border-neural-blue text-neural-blue scale-110 glow-blue"
+                : state.step > s.n
+                  ? "bg-neural-green/15 border-neural-green/40 text-neural-green"
+                  : "bg-dbos-card border-dbos-border text-gray-600"
+              }
+            `}>
+              {state.step > s.n ? "✓" : s.icon}
+            </div>
+            {i < steps.length - 1 && (
+              <div className={`w-8 h-px transition-colors duration-500 ${state.step > s.n ? "bg-neural-green/40" : "bg-dbos-border"}`} />
+            )}
+          </div>
+        ))}
+      </div>
+
       <div className="max-w-xl mx-auto px-8">
         {/* Step 0: Input */}
-        {state.step === 0 && (
+        <div
+          className="transition-all duration-400"
+          style={{ display: state.step === 0 ? "block" : "none" }}
+        >
           <div className="space-y-4">
-            <label className="block text-xs text-gray-400 font-mono tracking-wider uppercase">
-              What decision are you facing?
+            <label className={`block text-xs text-gray-400 font-mono tracking-wider uppercase ${isRTL ? "text-right" : ""}`}>
+              {tr.court.inputLabel}
             </label>
             <textarea
               value={state.input}
               onChange={(e) => setState((s) => ({ ...s, input: e.target.value }))}
+              dir={isRTL ? "rtl" : "ltr"}
               className="w-full bg-dbos-card border border-dbos-border rounded-lg p-4 text-sm text-gray-200 font-mono resize-none h-28 focus:outline-none focus:border-neural-blue/50 transition-colors"
-              placeholder="Describe the decision..."
+              placeholder={tr.court.inputPlaceholder}
             />
             <button
               onClick={handleStart}
-              className="w-full py-3 bg-neural-blue/15 border border-neural-blue/30 rounded-lg text-neural-blue text-sm font-mono tracking-wider hover:bg-neural-blue/25 transition-colors"
+              disabled={!state.input.trim()}
+              className="w-full py-3 bg-neural-blue/15 border border-neural-blue/30 rounded-lg text-neural-blue text-sm font-mono tracking-wider hover:bg-neural-blue/25 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed hover:scale-[1.01] active:scale-[0.99]"
             >
-              BEGIN EVALUATION
+              {tr.court.beginBtn}
             </button>
           </div>
-        )}
+        </div>
 
         {/* Step 1: Aligned? */}
         {state.step === 1 && (
           <div className="space-y-6">
             <div className="bg-dbos-card border border-dbos-border rounded-lg p-4">
-              <p className="text-[10px] text-gray-500 font-mono uppercase tracking-wider">Decision</p>
-              <p className="text-sm text-gray-300 mt-1 font-mono">{state.input}</p>
+              <p className="text-[10px] text-gray-500 font-mono uppercase tracking-wider">{tr.court.labels.decision}</p>
+              <p className={`text-sm text-gray-300 mt-1 font-mono ${isRTL ? "text-right" : ""}`}>{state.input}</p>
             </div>
-            <p className="text-center text-lg text-gray-300 font-display">
-              Is this aligned with your goals?
+            <p className={`text-center text-lg text-gray-300 font-display`}>
+              {tr.court.alignedQuestion}
             </p>
             <div className="grid grid-cols-2 gap-4">
               <button
                 onClick={() => handleAligned(true)}
-                className="py-4 bg-dbos-card border border-neural-green/30 rounded-lg text-neural-green font-mono text-sm hover:bg-neural-green/10 transition-colors"
+                className="py-4 bg-dbos-card border border-neural-green/30 rounded-lg text-neural-green font-mono text-sm hover:bg-neural-green/10 hover:scale-[1.02] active:scale-[0.99] transition-all duration-200"
               >
-                YES — ALIGNED
+                {tr.court.yesAligned}
               </button>
               <button
                 onClick={() => handleAligned(false)}
-                className="py-4 bg-dbos-card border border-neural-red/30 rounded-lg text-neural-red font-mono text-sm hover:bg-neural-red/10 transition-colors"
+                className="py-4 bg-dbos-card border border-neural-red/30 rounded-lg text-neural-red font-mono text-sm hover:bg-neural-red/10 hover:scale-[1.02] active:scale-[0.99] transition-all duration-200"
               >
-                NO — MISALIGNED
+                {tr.court.noAligned}
               </button>
             </div>
           </div>
@@ -115,36 +170,31 @@ export default function CourtPage() {
         {state.step === 2 && (
           <div className="space-y-6">
             <div className="bg-dbos-card border border-dbos-border rounded-lg p-4">
-              <p className="text-[10px] text-gray-500 font-mono uppercase tracking-wider">Decision</p>
-              <p className="text-sm text-gray-300 mt-1 font-mono">{state.input}</p>
-              <div className="mt-2 flex items-center gap-2">
+              <p className="text-[10px] text-gray-500 font-mono uppercase tracking-wider">{tr.court.labels.decision}</p>
+              <p className={`text-sm text-gray-300 mt-1 font-mono ${isRTL ? "text-right" : ""}`}>{state.input}</p>
+              <div className="mt-2">
                 <span className={`text-[10px] font-mono ${state.aligned ? "text-neural-green" : "text-neural-red"}`}>
-                  {state.aligned ? "✓ ALIGNED" : "✕ MISALIGNED"}
+                  {state.aligned ? tr.court.labels.aligned : tr.court.labels.misaligned}
                 </span>
               </div>
             </div>
             <p className="text-center text-lg text-gray-300 font-display">
-              What&apos;s your energy level for this?
+              {tr.court.energyQuestion}
             </p>
             <div className="grid grid-cols-3 gap-3">
-              <button
-                onClick={() => handleEnergy("high")}
-                className="py-4 bg-dbos-card border border-neural-green/30 rounded-lg text-neural-green font-mono text-xs hover:bg-neural-green/10 transition-colors"
-              >
-                HIGH
-              </button>
-              <button
-                onClick={() => handleEnergy("neutral")}
-                className="py-4 bg-dbos-card border border-neural-amber/30 rounded-lg text-neural-amber font-mono text-xs hover:bg-neural-amber/10 transition-colors"
-              >
-                NEUTRAL
-              </button>
-              <button
-                onClick={() => handleEnergy("low")}
-                className="py-4 bg-dbos-card border border-neural-red/30 rounded-lg text-neural-red font-mono text-xs hover:bg-neural-red/10 transition-colors"
-              >
-                LOW
-              </button>
+              {[
+                { val: "high" as const, label: tr.court.energyHigh, cls: "border-neural-green/30 text-neural-green hover:bg-neural-green/10" },
+                { val: "neutral" as const, label: tr.court.energyNeutral, cls: "border-neural-amber/30 text-neural-amber hover:bg-neural-amber/10" },
+                { val: "low" as const, label: tr.court.energyLow, cls: "border-neural-red/30 text-neural-red hover:bg-neural-red/10" },
+              ].map((btn) => (
+                <button
+                  key={btn.val}
+                  onClick={() => handleEnergy(btn.val)}
+                  className={`py-4 bg-dbos-card border ${btn.cls} rounded-lg font-mono text-xs hover:scale-[1.03] active:scale-[0.98] transition-all duration-200`}
+                >
+                  {btn.label}
+                </button>
+              ))}
             </div>
           </div>
         )}
@@ -153,37 +203,34 @@ export default function CourtPage() {
         {state.step === 3 && state.verdict && (
           <div className="space-y-6">
             <div className="bg-dbos-card border border-dbos-border rounded-lg p-4">
-              <p className="text-[10px] text-gray-500 font-mono uppercase tracking-wider">Decision</p>
-              <p className="text-sm text-gray-300 mt-1 font-mono">{state.input}</p>
+              <p className="text-[10px] text-gray-500 font-mono uppercase tracking-wider">{tr.court.labels.decision}</p>
+              <p className={`text-sm text-gray-300 mt-1 font-mono ${isRTL ? "text-right" : ""}`}>{state.input}</p>
             </div>
 
-            <div className={`border ${verdictConfig[state.verdict].border}/30 rounded-xl p-8 text-center ${verdictConfig[state.verdict].glow}`}>
-              <div className={`text-4xl mb-3`}>
-                {verdictConfig[state.verdict].icon}
-              </div>
+            <div className={`border ${verdictConfig[state.verdict].border}/30 rounded-xl p-8 text-center ${verdictConfig[state.verdict].glow} animate-pulse-glow`}>
+              <div className="text-4xl mb-3">{verdictConfig[state.verdict].icon}</div>
               <div className={`text-2xl font-display font-bold tracking-[0.15em] ${verdictConfig[state.verdict].color}`}>
                 {verdictConfig[state.verdict].label}
               </div>
               <div className="mt-4 space-y-1 text-xs text-gray-500 font-mono">
-                <p>Alignment: {state.aligned ? "✓ Yes" : "✕ No"}</p>
-                <p>Energy: {state.energy}</p>
+                <p>{tr.court.labels.alignment}: {state.aligned ? tr.court.labels.yes : tr.court.labels.no}</p>
+                <p>{tr.court.labels.energy}: {state.energy}</p>
               </div>
             </div>
 
             <button
               onClick={reset}
-              className="w-full py-3 bg-dbos-card border border-dbos-border rounded-lg text-gray-400 text-sm font-mono tracking-wider hover:border-neural-blue/30 transition-colors"
+              className="w-full py-3 bg-dbos-card border border-dbos-border rounded-lg text-gray-400 text-sm font-mono tracking-wider hover:border-neural-blue/30 hover:text-gray-300 hover:scale-[1.01] active:scale-[0.99] transition-all duration-200"
             >
-              NEW DECISION
+              {tr.court.newDecision}
             </button>
           </div>
         )}
       </div>
 
-      {/* Footer */}
       <footer className="text-center py-12 mt-8 border-t border-dbos-border">
         <p className="text-[10px] text-gray-600 tracking-[0.15em] font-mono">
-          3 QUESTIONS · ALIGNED → ENERGY → VERDICT
+          {tr.court.footer}
         </p>
       </footer>
     </div>
