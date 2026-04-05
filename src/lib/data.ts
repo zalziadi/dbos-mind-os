@@ -1,10 +1,19 @@
+// Real data from ziyad-brain MCP (brain_stats + brain_registry_stats)
+// Last synced: 2026-04-05
 export const stats = [
   { label: "MCP TOOLS", value: 22, color: "text-neural-blue" },
-  { label: "TESTS PASSING", value: 44, color: "text-neural-green" },
-  { label: "CONNECTIONS", value: 158, color: "text-neural-cyan" },
-  { label: "HEALTH SCORE", value: 66, color: "text-neural-amber" },
-  { label: "AI AGENTS", value: 10, color: "text-neural-purple" },
+  { label: "KNOWLEDGE CHUNKS", value: 1124, color: "text-neural-green" },
+  { label: "REGISTRY", value: 30, color: "text-neural-cyan" },
+  { label: "HEALTH SCORE", value: 88, color: "text-neural-amber" },
+  { label: "INTERACTIONS", value: 45, color: "text-neural-purple" },
 ];
+
+export const brainMeta = {
+  topTags: ["taamun", "book", "زياد_الزيادي", "project-alpha", "psychology-of-transformation"],
+  sources: { obsidian: 988, project: 12, learning: 0 },
+  activeGoals: 1,
+  registryBreakdown: { tools: 21, agents: 5, mcp: 3, skills: 1 },
+};
 
 export type NodeData = {
   id: string;

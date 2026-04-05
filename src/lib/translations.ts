@@ -13,17 +13,17 @@ export const t = {
     dashboard: {
       title: "Digital Brain OS",
       subtitle: "Mind OS v3 — Cognitive Operating System",
-      tagline: "22 MCP Tools · 44 Tests · 158 Connections · 10 Agents",
+      tagline: "22 MCP Tools · 1,124 Chunks · 30 Registry · 88 Health",
       footer: "The brain thinks, connects, decides, and evolves itself",
       meta: "DBOS v3 · BUILT 2025-04-04 · ~/ziyad-brain · SUPABASE pgvector:768 · ap-northeast-1",
     },
     // Stats
     stats: {
       mcpTools: "MCP Tools",
-      tests: "Tests Passing",
-      connections: "Connections",
+      chunks: "Knowledge Chunks",
+      registry: "Registry",
       health: "Health Score",
-      agents: "AI Agents",
+      interactions: "Interactions",
     },
     // Nodes
     nodes: {
@@ -129,17 +129,17 @@ export const t = {
     dashboard: {
       title: "نظام تشغيل العقل الرقمي",
       subtitle: "Mind OS v3 — نظام تشغيل معرفي",
-      tagline: "٢٢ أداة MCP · ٤٤ اختبار · ١٥٨ رابط · ١٠ إيجنت",
+      tagline: "٢٢ أداة MCP · ١٬١٢٤ قطعة معرفة · ٣٠ سجل · ٨٨ صحة",
       footer: "العقل يفكّر، يربط، يقرر، ويطوّر نفسه",
       meta: "DBOS v3 · مبني ٢٠٢٥-٠٤-٠٤ · ~/ziyad-brain · Supabase pgvector:768",
     },
     // Stats
     stats: {
       mcpTools: "أداة MCP",
-      tests: "اختبار ناجح",
-      connections: "ارتباط",
+      chunks: "قطعة معرفة",
+      registry: "سجل",
       health: "نقطة صحة",
-      agents: "إيجنت ذكاء",
+      interactions: "تفاعل",
     },
     // Nodes
     nodes: {

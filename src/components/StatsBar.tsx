@@ -5,10 +5,10 @@ import { useLang } from "@/context/LangContext";
 
 const statsConfig = [
   { value: 22, colorClass: "text-neural-blue", key: "mcpTools" as const },
-  { value: 44, colorClass: "text-neural-green", key: "tests" as const },
-  { value: 158, colorClass: "text-neural-cyan", key: "connections" as const },
-  { value: 66, colorClass: "text-neural-amber", key: "health" as const },
-  { value: 10, colorClass: "text-neural-purple", key: "agents" as const },
+  { value: 1124, colorClass: "text-neural-green", key: "chunks" as const },
+  { value: 30, colorClass: "text-neural-cyan", key: "registry" as const },
+  { value: 88, colorClass: "text-neural-amber", key: "health" as const },
+  { value: 45, colorClass: "text-neural-purple", key: "interactions" as const },
 ];
 
 function AnimatedCounter({ target, color }: { target: number; color: string }) {
